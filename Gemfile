@@ -1,4 +1,10 @@
 source "http://rubygems.org"
 
-# Specify your gem's dependencies in github-rdf.gemspec
+# Specify your gem's dependencies in github-lod.gemspec
 gemspec
+
+gem 'github-api-client', :path => '../github-api-client'
+
+group :development do
+  gem "wirble"
+end
