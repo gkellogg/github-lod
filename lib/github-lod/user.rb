@@ -55,7 +55,7 @@ module GitHubLOD
       ACCOUNT_FIELD_MAPPINGS.each_pair do |attr, mapping|
         yield RDF::Statement.new(uri,
           mapping[:predicate],
-          mapping[:object_class].new(self.send(attr))) unless attr.nil?
+          mapping[:object_class].new(self.send(attr))) unless attr.to_s.empty?
       end
 
       # User type
@@ -67,7 +67,7 @@ module GitHubLOD
       USER_FIELD_MAPPINGS.each_pair do |attr, mapping|
         yield RDF::Statement.new(user_node,
           mapping[:predicate],
-          mapping[:object_class].new(self.send(attr))) unless attr.nil?
+          mapping[:object_class].new(self.send(attr))) unless attr.to_s.empty?
       end
 
       # Followers
@@ -91,6 +91,12 @@ module GitHubLOD
         end
         yield RDF::Statement.new(f.user_node, RDF::FOAF.account, RDF::URI(f.uri))
       end
+      
+      # Repositories
+      repos.each do |r|
+        yield RDF::Statement.new(user_node, RDF::FOAF.developer, r.project_node)
+        yield RDF::Statement.new(r.project_node, RDF::DOAP.name, r.name)
+      end
     end
 
     ##
@@ -110,6 +116,7 @@ module GitHubLOD
     end
     
     def repos
+      @repos ||= fetch_assoc(:repos, Repo)
     end
 
     def inspect
