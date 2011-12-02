@@ -1,0 +1,11 @@
+<li about="<%= user.user_node%>" typeof="foaf:Person">
+  <a href="/users/<%== user.login %>">
+    <link property="foaf:account" href="<%== user.uri %>"/>
+    <% if user.name -%>
+    <span property="foaf.name"><%== user.name %></span>
+    (<span property="foaf.nick"><%== user.login %></span>)
+    <% else -%>
+    <span property="foaf.nick"><%== user.login %></span>
+    <% end -%>
+  </a>
+</li>

@@ -21,9 +21,9 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.8.7'
 
   s.add_runtime_dependency      "linkeddata",         '>= 0.3.4'
-  s.add_runtime_dependency      'github-api-client',  '>= 0.3.0'
 
   # From github-api-client
+  s.add_runtime_dependency      'github-api-client',  '>= 0.3.0'
   s.add_runtime_dependency      "rainbow"
   s.add_runtime_dependency      "activerecord",       ">= 3.0.3"
   s.add_runtime_dependency      "activesupport",      ">= 3.0.3"
@@ -31,6 +31,13 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency      "rdf-xsd",            ">= 0.3.4"
   s.add_runtime_dependency      "activerecord",       "~> 3.0.3"  # Because of github-api-client dependency
   s.add_runtime_dependency      "activesupport",      "~> 3.0.3"  # Because of github-api-client dependency
+
+  # Sinatra dependencies
+  s.add_runtime_dependency      "sinatra",            '>= 1.3.1'
+  s.add_runtime_dependency      'sinatra-linkeddata', ">= 0.3.0"
+  s.add_runtime_dependency      'erubis',             '>= 2.7.0'
+  s.add_runtime_dependency      "rack",               '>= 1.3.1'
+  s.add_runtime_dependency      'equivalent-xml',     '>= 0.2.8'
   
-  s.add_development_dependency  "rspec",              '>= 2.6.0'
+  s.add_development_dependency  "rspec",              '>= 1.3.5'
 end

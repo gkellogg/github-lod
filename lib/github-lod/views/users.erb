@@ -1,0 +1,12 @@
+<section>
+  <h1><%= title %></h1>
+  <p>This site exhibits a simple GitHub browser, which presents information
+    using semantic markup. It is an example application using Ruby
+    LinkedData/RDF toolsets</p>
+  
+  <div class="users">
+    <ul>
+      <%= partial "user", :collection => users %>
+    </ul>
+  </div>
+</section>

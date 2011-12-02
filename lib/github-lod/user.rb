@@ -30,6 +30,12 @@ module GitHubLOD
     }
 
     ##
+    # All users
+    def self.all
+      GitHub::User.all.map {|u| GitHubLOD::User.new(u)}
+    end
+
+    ##
     # @param [GitHub::User, String] user
     def initialize(user)
       @api_obj = user.is_a?(GitHub::User) ? user : GitHub::User.get(user)
@@ -95,6 +101,7 @@ module GitHubLOD
       # Repositories
       repos.each do |r|
         yield RDF::Statement.new(user_node, RDF::FOAF.developer, r.project_node)
+        yield RDF::Statement.new(r.project_node, RDF.type, RDF::DOAP.Project)
         yield RDF::Statement.new(r.project_node, RDF::DOAP.name, r.name)
       end
     end

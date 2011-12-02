@@ -1,0 +1,45 @@
+<section about="<%== user.user_node%>" typeof="foaf:Person schema:Person">
+  <h1><%= title %></h1>
+  <p>
+    <a property="foaf:account" href="<%== user.uri %>">
+      <% if user.name -%>
+      <span property="foaf.name"><%== user.name %></span>
+      (<span property="foaf.nick"><%== user.login %></span>)
+      <% else -%>
+      <span property="foaf.nick"><%== user.login %></span>
+      <% end -%>
+    </a>
+    <img property="foaf:depiction" src="<%= user.depiction%>"/>
+    has <%= user.repos.length %> repositories,
+    follows <%= user.followings.length %> users,
+    and is followed by <%= user.followers.length %> users.
+  </p>
+  <p about="<%== user.uri %>" typeof="foaf:OnlineAccount">
+    Account created
+    <time property="dc:created" datetime="<%=user.created_at%>">
+      <%== RDF::Literal::DateTime.new(user.created_at).humanize %>
+    </time> with account name <span property="foaf:accountName"><%= user.login %></span>.
+  </p>
+  <p>
+    <%== user.name || user.login %> lives in
+    <span property="foaf:based_near"><%== user.location %></span>.
+  </p>
+  
+  <section><h2><a href="/user/<%= user.login %>/repos">Repositories</a></h2>
+    <ul>
+      <%= partial "repo", :collection => user.repos.sort_by {|r| r.name.downcase } %>
+    </li>
+  </section>
+
+  <section><h2>Followers</h2>
+    <ul>
+      <%= partial "user", :collection => user.followers.sort_by {|u| u.name || u.login} %>
+    </li>
+  </section>
+
+  <section><h2>Following</h2>
+    <ul>
+      <%= partial "user", :collection => user.followings.sort_by {|u| u.name || u.login} %>
+    </li>
+  </section>
+</section>

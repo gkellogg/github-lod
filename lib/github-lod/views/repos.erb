@@ -1,0 +1,10 @@
+<section>
+  <h1><%= title %></h1>
+  <p>Loaded Repositories</p>
+  
+  <div class="repos">
+    <ul>
+      <%= partial "repo", :collection => repos %>
+    </ul>
+  </div>
+</section>
