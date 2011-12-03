@@ -7,11 +7,7 @@ module GitHubLOD
   # Creates a FOAF record for the user and account, with DOAP references to repositories.
   #
   # @see http://developer.github.com/v3/users/
-  class User
-    include RDF::Enumerable
-
-    attr_reader :api_obj
-    attr_reader :uri
+  class User < Base
     attr_reader :user_node
     
     USER_FIELD_MAPPINGS = {
@@ -34,34 +30,56 @@ module GitHubLOD
     def self.all
       GitHub::User.all.map {|u| GitHubLOD::User.new(u)}
     end
-
+    
     ##
     # @param [GitHub::User, String] user
     def initialize(user)
-      @api_obj = user.is_a?(GitHub::User) ? user : GitHub::User.get(user)
+      super(user.is_a?(GitHub::User) ? user : GitHub::User.get(user))
       @uri = RDF::URI.new("http://github.com/#{@api_obj.login}")
       @user_node = RDF::Node.new("user-#{login}")
     end
     
     ## Accessors ##
-    def mbox; "mailto:#{email}"; end
+    def mbox; "mailto:#{email}" if !email.to_s.empty?; end
     def mbox_sha1sum; Digest::SHA1.hexdigest(mbox) if mbox; end
     def depiction
-      "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email)}" if email && gravatar_id
+      "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email)}" if !email.to_s.empty?
+    end
+
+    ##
+    # Also fetch if followers, followings, or repos are empty
+    #def fetch
+    #  super
+    #  [:followers, :followings, :repos].each do |assoc|
+    #    api_obj.fetch(assoc) if self.send(assoc).empty?
+    #  end
+    #  @followers = @followings = @repos = nil
+    #  self
+    #end
+
+    ##
+    # Synchronize object with GitHub
+    #
+    # @return [Base]
+    def sync
+      api_obj.fetch(:self, :followers, :followings, :repos)
+      @followers = @followings = @repos = nil
+      self
     end
 
     ##
     # Generate Statements for user records
-    def each
+    #
+    # @yield statement
+    # @yieldparam [RDF::Statement] statement
+    def each(&block)
       # Github Account info
       yield RDF::Statement.new(uri, RDF.type, RDF::FOAF.OnlineAccout)
       yield RDF::Statement.new(uri, RDF::FOAF.accountServiceHomepage, RDF::URI("http://github.com/"))
       yield RDF::Statement.new(uri, RDF::FOAF.name, RDF::Literal("GitHub"))
 
       ACCOUNT_FIELD_MAPPINGS.each_pair do |attr, mapping|
-        yield RDF::Statement.new(uri,
-          mapping[:predicate],
-          mapping[:object_class].new(self.send(attr))) unless attr.to_s.empty?
+        yield_attr(uri, attr, mapping, &block)
       end
 
       # User type
@@ -71,12 +89,11 @@ module GitHubLOD
 
       # User info, with unknown FOAF identifier
       USER_FIELD_MAPPINGS.each_pair do |attr, mapping|
-        yield RDF::Statement.new(user_node,
-          mapping[:predicate],
-          mapping[:object_class].new(self.send(attr))) unless attr.to_s.empty?
+        yield_attr(user_node, attr, mapping, &block)
       end
 
       # Followers
+      # Don't cause it to fault in, if not already loaded
       followers.each do |f|
         yield RDF::Statement.new(f.user_node, RDF::FOAF.knows, user_node)
         if f.name
@@ -85,9 +102,10 @@ module GitHubLOD
           yield RDF::Statement.new(f.user_node, RDF::FOAF.nick, RDF::Literal(f.login))
         end
         yield RDF::Statement.new(f.user_node, RDF::FOAF.account, RDF::URI(f.uri))
-      end
+      end unless followers.empty? 
 
       # Follows
+      # Don't cause it to fault in, if not already loaded
       followings.each do |f|
         yield RDF::Statement.new(user_node, RDF::FOAF.knows, f.user_node)
         if f.name
@@ -96,14 +114,16 @@ module GitHubLOD
           yield RDF::Statement.new(f.user_node, RDF::FOAF.nick, RDF::Literal(f.login))
         end
         yield RDF::Statement.new(f.user_node, RDF::FOAF.account, RDF::URI(f.uri))
-      end
+      end unless followings.empty?
       
       # Repositories
+      # Don't cause it to fault in, if not already loaded
       repos.each do |r|
         yield RDF::Statement.new(user_node, RDF::FOAF.developer, r.project_node)
         yield RDF::Statement.new(r.project_node, RDF.type, RDF::DOAP.Project)
         yield RDF::Statement.new(r.project_node, RDF::DOAP.name, r.name)
-      end
+      end unless repos.empty?
+      self
     end
 
     ##
@@ -127,32 +147,14 @@ module GitHubLOD
     end
 
     def inspect
-      "#<#{self.class.name}:#{self.object_id}" +
-      (name ? " name: #{name}" : " login: #{login}") +
+      "#<#{self.class.name}:#{self.object_id}" + 
+      (name.to_s.empty? ? "" : " name: #{name}") +
+      " login: #{login}" +
+      " followers: #{followers.length}" +
+      " followings: #{followings.length}" +
+      " repos: #{repos.length}" +
       ">"
     end
 
-    # Proxy everything else to api_obj
-    def method_missing(method, *args)
-      api_obj.send(method, *args)
-    end
-
-    protected
-    ##
-    # Fetch the association, recursing to referenced objects
-    # and fetching them if the association is empty
-    def fetch_assoc(method, klass = self.class)
-      list = api_obj.send(method)
-      if list.empty?
-        # Fitch missing associationg
-        api_obj.fetch(method)
-        list = api_obj.send(method)
-      end
-      list.each do |r|
-         # Fetch unfetched records
-        r.fetch(:self) if r.created_at.today?
-      end
-      list.map {|api_obj| klass.new(api_obj)}
-    end
   end
 end

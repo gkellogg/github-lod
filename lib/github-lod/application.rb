@@ -13,6 +13,7 @@ module GitHubLOD
     end
 
     get '/' do
+      redirect to('/users')
     end
 
     ##
@@ -29,7 +30,7 @@ module GitHubLOD
     get '/users/:login' do
       erb :user, :locals => {
         :title => "GitHub account for #{params[:login]}",
-        :user => User.new(params[:login]),
+        :user => User.new(params[:login]).fetch,
       }
     end
 
@@ -46,7 +47,7 @@ module GitHubLOD
     # Show a users repositories
     get '/users/:login/repo/:repo' do
       u = User.new(params[:login])
-      r = u.repos.detect {|r| r.name == params[:repo]}
+      r = u.repos.detect {|r| r.name == params[:repo]}.fetch
       erb :repo, :locals => {
         :title => "GitHub repository #{u.login}/#{r.name}",
         :repo => r,

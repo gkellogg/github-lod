@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+$:.unshift(File.expand_path("../lib", __FILE__))
+require 'bundler'
+Bundler.setup
+require 'github-lod'
+require 'getoptlong'
+
+format = :ttl
+user = nil
+repo = nil
+
+opts = GetoptLong.new(
+  ["--format", GetoptLong::REQUIRED_ARGUMENT],
+  ["--repo", GetoptLong::REQUIRED_ARGUMENT],
+  ["--user", GetoptLong::REQUIRED_ARGUMENT]
+)
+opts.each do |opt, arg|
+  case opt
+  when '--format' then format = arg.to_sym
+  when '--repo'   then repo = arg
+  when '--user'   then user = arg
+  end
+end
+
+entity = GitHubLOD::User.new(user) if user
+if repo
+  raise "Dumping a repository requires a user" unless entity
+  
+  # Fetch user associations, and find repository
+  entity = entity.fetch.repos.detect {|r| r.name == repo}
+end
+
+if entity
+  STDERR.puts "Dumping: #{entity.inspect}"
+  puts entity.fetch.dump(format, :standard_prefixes => true)
+elsif user || repo
+  STDERR.puts "No record found for #{[user, repo].join('/')}"
+else
+  GitHubLOD::Base.all.each do |r|
+    STDERR.puts "Dumping: #{r.inspect}"
+    r = (r.fetch if r.is_a?(GitHubLOD::Repo) rescue nil)
+    puts r.dump(format, :standard_prefixes => true) if r
+  end
+end
