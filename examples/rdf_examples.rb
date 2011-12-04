@@ -120,4 +120,3 @@ end
 
 class Foo
   include RDF::Enumerable
-  
