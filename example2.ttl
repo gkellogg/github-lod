@@ -1,0 +1,5 @@
+
+<https://github.com/gkellogg/rdf> a <http://usefulinc.com/ns/doap#GitRepository> .
+
+ [ a <http://usefulinc.com/ns/doap#Project>;
+    <http://usefulinc.com/ns/doap#repository> <https://github.com/gkellogg/rdf>] .
