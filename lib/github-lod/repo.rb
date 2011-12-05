@@ -28,9 +28,9 @@ module GitHubLOD
     }
 
     ##
-    # All repos
+    # Loaded repos, those having a #url
     def self.all
-      GitHub::Repo.all.map {|r| GitHubLOD::Repo.new(r)}
+      GitHub::Repo.all.select(&:name).map {|r| GitHubLOD::Repo.new(r)}
     end
 
     ##

@@ -31,9 +31,9 @@ module GitHubLOD
     }
 
     ##
-    # All users
+    # All users, those having a #name
     def self.all
-      GitHub::User.all.map {|u| GitHubLOD::User.new(u)}
+      GitHub::User.all.select(&:name).map {|u| GitHubLOD::User.new(u)}
     end
     
     ##
@@ -53,14 +53,14 @@ module GitHubLOD
 
     ##
     # Also fetch if followers, followings, or repos are empty
-    #def fetch
-    #  super
-    #  [:followers, :followings, :repos].each do |assoc|
-    #    api_obj.fetch(assoc) if self.send(assoc).empty?
-    #  end
-    #  @followers = @followings = @repos = nil
-    #  self
-    #end
+    def fetch
+      super
+      if [:followers, :followings, :repos].any? {|assoc| self.send(assoc).empty?}
+        api_obj.fetch(:followers, :followings, :repos)
+        @followers = @followings = @repos = nil
+      end
+      self
+    end
 
     ##
     # Synchronize object with GitHub
