@@ -44,7 +44,7 @@ module GitHubLOD
         repo
       end
       super(api)
-      @project_node = RDF::Node("proj-#{api_obj.owner.login}-#{name}")
+      @project_node = bnode("proj-#{api_obj.owner.login}-#{name}")
       @owner = User.new(api_obj.owner)
     end
     

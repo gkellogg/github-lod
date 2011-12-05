@@ -93,6 +93,12 @@ module GitHubLOD
     end
     
     ##
+    # Create a named node using a safe ID
+    def bnode(id)
+      RDF::Node(id.gsub(/[^A-Za-z0-9-_]/, '_'))
+    end
+    
+    ##
     # Yield an attribute using predicate and typing info
     #
     # @param [RDF::Resource] subject

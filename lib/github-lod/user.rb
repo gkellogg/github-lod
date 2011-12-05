@@ -6,6 +6,11 @@ module GitHubLOD
   #
   # Creates a FOAF record for the user and account, with DOAP references to repositories.
   #
+  # Note that a GitHub account does _not_ denote user. A user is best modeled as a
+  # foaf:Person using a Blank Node, for now.
+  #
+  # The GitHub account is a foaf:OnlineAccout, referenced by the user
+  #
   # @see http://developer.github.com/v3/users/
   class User < Base
     attr_reader :user_node
@@ -36,7 +41,7 @@ module GitHubLOD
     def initialize(user)
       super(user.is_a?(GitHub::User) ? user : GitHub::User.get(user))
       @uri = RDF::URI.new("http://github.com/#{@api_obj.login}")
-      @user_node = RDF::Node.new("user-#{login}")
+      @user_node = bnode("user-#{login}")
     end
     
     ## Accessors ##
@@ -77,6 +82,8 @@ module GitHubLOD
       yield RDF::Statement.new(uri, RDF.type, RDF::FOAF.OnlineAccout)
       yield RDF::Statement.new(uri, RDF::FOAF.accountServiceHomepage, RDF::URI("http://github.com/"))
       yield RDF::Statement.new(uri, RDF::FOAF.name, RDF::Literal("GitHub"))
+      yield RDF::Statement.new(uri, RDF::FOAF.page, uri)
+      yield RDF::Statement.new(uri, RDF::DOAP.homepage, uri)
 
       ACCOUNT_FIELD_MAPPINGS.each_pair do |attr, mapping|
         yield_attr(uri, attr, mapping, &block)
