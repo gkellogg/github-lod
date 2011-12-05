@@ -28,7 +28,7 @@ require 'rdf/turtle'
 puts NTriples::Writer.buffer {|writer| writer << g}
 
 # Also, you can include other formats
-Turtle::Writer.buffer {|writer| writer << g}
+puts Turtle::Writer.buffer {|writer| writer << g}
 
 # Use Graph.dump or Writer.open to save to a file
 puts g.dump(:ttl, :standard_prefixes => true)
@@ -48,7 +48,9 @@ Writer.for(:content_type => "text/html")
 Reader.for('example2.ttl')
 
 # Open a URL and use format detection to find a writer
-puts Graph.load('http://greggkellogg.net/foaf').dump(:ttl)
+puts Graph.load('http://greggkellogg.net/foaf').
+  dump(:ttl, :base_uri => 'http://greggkellogg.net/foaf',
+       :standard_prefixes => true)
 
 f = "https://raw.github.com/gkellogg/rdf/master/etc/doap.nq"
 NQuads::Reader.open(f) do |reader|
@@ -86,7 +88,7 @@ end; nil
 
 require 'sparql'
 
-f = "./dumps/github-lod.ttl"
+f = "./dumps/github-lod.nt"
 doap = Repository.load(f)
 
 query = SPARQL.parse(%q(
@@ -94,6 +96,7 @@ query = SPARQL.parse(%q(
   PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
   SELECT ?repo ?name
+  FROM NAMED <http://greggkellogg.net/foaf>
   WHERE {
     [ a doap:Project;
       doap:name ?repo;
@@ -109,14 +112,3 @@ query.execute(doap).each do |soln|
   puts "project: #{soln.repo} name: #{soln.name}"
 end; nil
 
-# Example 6
-# RDF Graph behavior
-
-s = Struct.new(:s, :p, :o)
-s.extend(RDF::Enumerable)
-def s.each
-  yield RDF::Statement.new(s, p, o)
-end
-
-class Foo
-  include RDF::Enumerable
