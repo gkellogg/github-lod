@@ -25,3 +25,23 @@ class RDF::Literal
     end
   end
 end
+
+require 'rack/linkeddata'
+class Rack::LinkedData::ContentNegotiation
+  # Pass more options to the writer
+  def serialize(env, status, headers, body)
+    begin
+      writer, content_type = find_writer(env)
+      if writer
+        puts "Use writer #{writer} for #{content_type}"
+        headers = headers.merge(VARY).merge('Content-Type' => content_type) # FIXME: don't overwrite existing Vary headers
+        [status, headers, [writer.dump(body, nil, :standard_prefixes => true)]]
+      else
+        not_acceptable
+      end
+    rescue RDF::WriterError => e
+      not_acceptable
+    end
+  end
+end
+
