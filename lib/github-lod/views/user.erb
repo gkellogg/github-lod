@@ -9,7 +9,9 @@
       <span property="foaf.nick"><%== user.login %></span>
       <% end -%>
     </a>
-    <img property="foaf:depiction" src="<%= user.depiction%>"/>
+    <% if user.email -%>
+      <img property="foaf:depiction" src="<%= user.depiction%>"/>
+    <% end -%>
     has <%= user.repos.length %> repositories,
     follows <%= user.followings.length %> users,
     and is followed by <%= user.followers.length %> users.
