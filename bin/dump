@@ -37,9 +37,17 @@ if entity
 elsif user || repo
   STDERR.puts "No record found for #{[user, repo].join('/')}"
 else
-  GitHubLOD::Base.all.each do |r|
-    STDERR.puts "Dumping: #{r.inspect}"
-    r = (r.fetch if r.is_a?(GitHubLOD::Repo) rescue nil)
-    puts r.dump(format, :standard_prefixes => true) if r
+  g = RDF::Graph.new
+  GitHubLOD::User.all.each do |u|
+    STDERR.puts "Dumping: #{u.inspect}"
+    g << u
   end
+  GitHubLOD::Repo.all.each do |r|
+    STDERR.puts "Dumping: #{r.inspect}"
+    r = r.fetch
+    next unless r.url
+    g << r
+  end
+  STDERR.puts "Graph: #{g.inspect}, #{g.count}"
+  puts g.dump(format, :standard_prefixes => true)
 end
