@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.8.7'
 
   s.add_runtime_dependency      "linkeddata",         '>= 0.3.4'
+  s.add_runtime_dependency      'equivalent-xml',     '>= 0.2.8'
 
   # From github-api-client
   s.add_runtime_dependency      'github-api-client',  '>= 0.3.0'
@@ -37,7 +38,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency      'sinatra-linkeddata', ">= 0.3.0"
   s.add_runtime_dependency      'erubis',             '>= 2.7.0'
   s.add_runtime_dependency      "rack",               '>= 1.3.1'
-  s.add_runtime_dependency      'equivalent-xml',     '>= 0.2.8'
+  s.add_runtime_dependency      'sinatra-respond_to', '>= 0.8.0'
   
   s.add_development_dependency  "rspec",              '>= 1.3.5'
 end

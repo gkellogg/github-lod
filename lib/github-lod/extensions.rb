@@ -29,12 +29,15 @@ end
 require 'rack/linkeddata'
 class Rack::LinkedData::ContentNegotiation
   # Pass more options to the writer
+  # Also, be compatible with Sinatra::RespondTo and look at
+  # returned Content-Type to find the writer
   def serialize(env, status, headers, body)
     begin
-      writer, content_type = find_writer(env)
+      content_type = headers['Content-Type'].split(';').first
+      writer = RDF::Writer.for(:content_type => content_type)
       if writer
         puts "Use writer #{writer} for #{content_type}"
-        headers = headers.merge(VARY).merge('Content-Type' => content_type) # FIXME: don't overwrite existing Vary headers
+        headers = VARY.merge(headers)
         [status, headers, [writer.dump(body, nil, :standard_prefixes => true)]]
       else
         not_acceptable
