@@ -95,7 +95,7 @@ module GitHubLOD
     ##
     # Create a named node using a safe ID
     def bnode(id)
-      RDF::Node(id.gsub(/[^A-Za-z0-9-_]/, '_'))
+      RDF::Node(id.gsub(/[^A-Za-z0-9\-_]/, '_'))
     end
     
     ##
