@@ -86,12 +86,6 @@ query.execute(doap).each do |soln|
 end; nil
 
 # Example 5
-# Graph Navigation
-
-# Traverse via simple queries
-puts doap.query(:person, RDF.type, FOAF.Person)
-
-# Example 6
 # SPARQL
 
 require 'sparql'
