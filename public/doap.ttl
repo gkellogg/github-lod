@@ -9,18 +9,18 @@
    foaf:homepage <http://greggkellogg.net/>;
    rdfs:isDefinedBy <http://greggkellogg.net/foaf.rdf>;
    foaf:developer [ a doap:Project;
-     dc:creator <http://greggkellogg.net/foaf.rdf#me>;
+     dc:creator <http://greggkellogg.net/foaf#me>;
      doap:bug-database <https://github.com/gkellogg/github-lod/issues>;
      doap:description "Provides DOAP, schema.org and FOAF representations of schema.org repositories";
-     doap:developer <http://greggkellogg.net/foaf.rdf#me>;
-     doap:documenter <http://greggkellogg.net/foaf.rdf#me>;
+     doap:developer <http://greggkellogg.net/foaf#me>;
+     doap:documenter <http://greggkellogg.net/foaf#me>;
      doap:homepage "";
-     doap:maintainer <http://greggkellogg.net/foaf.rdf#me>;
+     doap:maintainer <http://greggkellogg.net/foaf#me>;
      doap:name "github-lod";
      doap:programming-language "Ruby";
      doap:repository <https://github.com/gkellogg/github-lod>;
      doap:wiki <https://github.com/gkellogg/github-lod/wiki>;
-     foaf:maker <http://greggkellogg.net/foaf.rdf#me>];
+     foaf:maker <http://greggkellogg.net/foaf#me>];
    foaf:mbox <mailto:gregg@kellogg-assoc.com>;
    foaf:mbox_sha1sum "35bc44e6d0070e5ad50ccbe0d24403c96af2b9bd"^^xsd:hexBinary;
    foaf:name "Gregg Kellogg" .
