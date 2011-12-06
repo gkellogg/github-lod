@@ -1,5 +1,7 @@
-<li about="<%= repo.project_node%>" typeof="doap:Project">
-  <a href="/users/<%== repo.owner.login %>/repos/<%== repo.name%>">
-    <%== repo.owner.login %>/<span property="doap:name"><%== repo.name %></span>
-  </a>
+<li about="<%= repo.project.subject%>" typeof="doap:Project">
+  <div rel="doap:repository" typeof="doap:GitRepository" resource="<%=repo.subject%>">
+    <a href="/accounts/<%== repo.owner.login %>/repos/<%== repo.name%>">
+      <%== repo.owner.login %>/<span about="<%= repo.project.subject%> property="doap:name"><%== repo.name %></span>
+    </a>
+  </div>
 </li>

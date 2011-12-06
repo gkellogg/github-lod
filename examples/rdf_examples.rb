@@ -25,15 +25,15 @@ puts g.dump(:ntriples)
 require 'rdf/ntriples'
 require 'rdf/turtle'
 
-puts NTriples::Writer.buffer {|writer| writer << g}
+puts NTriples::Writer.buffer {|writer| writer << g};nil
 
 # Also, you can include other formats
-puts Turtle::Writer.buffer {|writer| writer << g}
+puts Turtle::Writer.buffer {|writer| writer << g};nil
 
 # Use Graph.dump or Writer.open to save to a file
-puts g.dump(:ttl, :standard_prefixes => true)
+puts g.dump(:ttl, :standard_prefixes => true);nil
 
-Turtle::Writer.open('example2.ttl') {|w| w << g}
+Turtle::Writer.open('example2.ttl') {|w| w << g};nil
 puts File.read('example2.ttl')
 
 # Example 3
@@ -41,26 +41,28 @@ puts File.read('example2.ttl')
 
 require 'rdf/rdfa'
 require 'rdf/rdfxml'
-require 'rdf/nquads'
 
 Writer.for(:ttl)
 Writer.for(:content_type => "text/html")
 Reader.for('example2.ttl')
+
+# List available formats
+RDF::Format.to_a.map(&:to_sym)
 
 # Open a URL and use format detection to find a writer
 puts Graph.load('http://greggkellogg.net/foaf').
   dump(:ttl, :base_uri => 'http://greggkellogg.net/foaf',
        :standard_prefixes => true)
 
-f = "https://raw.github.com/gkellogg/rdf/master/etc/doap.nq"
-NQuads::Reader.open(f) do |reader|
+f = "http://greggkellogg.net/github-lod/doap.ttl"
+Turtle::Reader.open(f) do |reader|
   reader.each {|st| puts st.inspect}
 end
 
 # Example 4
 # Graph Query
 
-f = "https://raw.github.com/gkellogg/rdf/master/etc/doap.nq"
+f = "http://greggkellogg.net/github-lod/doap.ttl"
 doap = Graph.load(f)
 
 # using RDF::Query
@@ -84,6 +86,12 @@ query.execute(doap).each do |soln|
 end; nil
 
 # Example 5
+# Graph Navigation
+
+# Traverse via simple queries
+puts doap.query(:person, RDF.type, FOAF.Person)
+
+# Example 6
 # SPARQL
 
 require 'sparql'

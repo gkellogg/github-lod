@@ -1,46 +1,47 @@
-<section about="<%== repo.project_node%>" typeof="doap:Project">
-  <h1 property="doap:name"><%== repo.name %></h1>
-  <p property="description"><%== repo.description %></p>
+<section about="<%== repo.project.subject%>" typeof="doap:Project">
+  <h1 property="doap:name"><%== repo.project.name %></h1>
+  <p property="description"><%== repo.project.description %></p>
   <p>
     Developer:
     <span property="foaf:developer"
-       resource="<%= repo.owner.user_node %>"
+       resource="<%= repo.owner.subject %>"
        typeof="foaf:Person">
-      <a property="foaf:account" href="<%= repo.owner.uri %>">
-      <% if repo.owner.name -%>
-        <span property="foaf:name"><%== repo.owner.name %></span>
-      <% else -%>
+       <% if repo.owner.name -%>
+         <span property="foaf:name"><%== repo.owner.name %></span>
+       <% else -%>
+         <span property="foaf:nick"><%== repo.owner.login %></span>
+       <% end -%>
+      (<a rel="foaf:account" href="<%= repo.owner.subject %>" typeof="foaf:OnlineAccount">
         <span property="foaf:nick"><%== repo.owner.login %></span>
-      <% end -%>
-      </a><br/>
+      </a>)<br/>
     Created:
-    <time property="dc:created" datetime="<%=repo.created_at%>">
+    <time property="dc:created" datetime="<%=repo.project.created_at%>">
       <%== RDF::Literal::DateTime.new(repo.created_at).humanize %>
     </time><br/>
-  <% unless repo.homepage.to_s.empty? -%>
+  <% unless repo.project.homepage.to_s.empty? -%>
     Homepage:
-    <a property="doap:homepage" href="<%= repo.homepage%>">
+    <a property="doap:homepage" href="<%= repo.project.homepage%>">
       <%= repo.homepage %>
     </a><br/>
   <% end -%>
-  <% unless repo.language.to_s.empty? -%>
+  <% unless repo.project.language.to_s.empty? -%>
     Programming Language:
-    <span property="doap:programming-language"><%= repo.language %></span><br/>
+    <span property="doap:programming-language"><%= repo.project.language %></span><br/>
   <% end -%>
     Repository:
-    <a property="doap:repository" href="<%= repo.url%>" typeof="doap:GitRepository">
-      <%= repo.url %>
+    <a property="doap:repository" href="<%= repo.subject%>" typeof="doap:GitRepository">
+      <%= repo.subject %>
     </a><br/>
-  <% if repo.has_issues? -%>
+  <% if repo.project.has_issues? -%>
     Issues:
-    <a property="doap:bug-database" href="<%=repo.issues_url%>">
-      <%= repo.issues_url %>
+    <a property="doap:bug-database" href="<%=repo.project.issues%>">
+      <%= repo.project.issues %>
     </a><br/>
   <% end -%>
-  <% if repo.has_wiki? -%>
+  <% if repo.project.has_wiki? -%>
     Wiki:
-    <a property="doap:wiki" href="<%= repo.wiki_url%>">
-      <%= repo.wiki_url %>
+    <a property="doap:wiki" href="<%= repo.project.wiki%>">
+      <%= repo.project.wiki %>
     </a><br/>
   <% end -%>
   </p>

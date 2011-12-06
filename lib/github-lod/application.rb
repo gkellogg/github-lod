@@ -31,60 +31,60 @@ module GitHubLOD
     end
 
     get '/' do
-      redirect to('/users')
+      redirect to('/accounts')
     end
 
     ##
-    # Show cached users
-    get '/users' do
+    # Show cached accounts
+    get '/accounts' do
       respond_to do |format|
         format.html do
-          erb :users, :locals => {
-            :title => "Loaded GitHub users",
-            # Only users with names show up, no login-only accounts
-            :users => User.all.select(&:name).sort_by {|u| (u.name || u.login).downcase}
+          erb :accounts, :locals => {
+            :title => "Loaded GitHub accounts",
+            # Only accounts with names show up, no login-only accounts
+            :accounts => Account.all.sort_by {|u| (u.name || u.login).downcase}
           }
         end
 
         # Return all loaded users for content negotiation
-        format.nt { User.singleton }
-        format.ttl { User.singleton }
-        format.rdf { User.singleton }
-        format.n3 { User.singleton }
+        format.nt { Account.singleton }
+        format.ttl { Account.singleton }
+        format.rdf { Account.singleton }
+        format.n3 { Account.singleton }
       end
     end
 
     ##
     # Show information for a user, with optional extension
-    get '/users/:login' do |login|
-      puts "user: #{login.inspect}, format: #{format}, Accept: #{env['HTTP_ACCEPT']}"
-      user = User.new(login).fetch
+    get '/accounts/:login' do |login|
+      account = Account.new(login).sync
       respond_to do |format|
         format.html do
-          erb :user, :locals => {
+          erb :account, :locals => {
             :title => "GitHub account for #{login}",
-            :user => user,
+            :account => account,
           }
         end
         
         # Content negotiation
-        format.nt     { user }
-        format.ttl    { user }
-        format.rdf    { user }
-        format.n3     { user }
-        format.jsonld { user }
+        format.nt     { account }
+        format.ttl    { account }
+        format.rdf    { account }
+        format.n3     { account }
+        format.jsonld { account }
       end
     end
 
     ##
     # Show a users repositories
-    get '/users/:login/repos/:repo' do
-      u = User.new(params[:login])
-      r = u.repos.detect {|r| r.name == params[:repo]}.fetch
+    get '/accounts/:login/repos/:repo' do
+      account = Account.new(params[:login])
+      r = account.repos.detect {|r| r.name == params[:repo]}
+      r = r.sync
       respond_to do |format|
         format.html do
           erb :repo, :locals => {
-            :title => "GitHub repository #{u.login}/#{r.name}",
+            :title => "GitHub repository #{account.login}/#{r.name}",
             :repo => r,
           }
         end
@@ -105,16 +105,16 @@ module GitHubLOD
         format.html do
           erb :repos, :locals => {
             :title => "Loaded GitHub repositories",
-            :repos => Repo.all.sort_by {|r| "#{r.owner.login}/#{r.name}".downcase}
+            :repos => Repository.all.sort_by {|r| "#{r.owner.login}/#{r.name}".downcase}
           }
         end
 
         # Content negotiation
-        format.nt     { Repo.singleton }
-        format.ttl    { Repo.singleton }
-        format.rdf    { Repo.singleton }
-        format.n3     { Repo.singleton }
-        format.jsonld { Repo.singleton }
+        format.nt     { Repository.singleton }
+        format.ttl    { Repository.singleton }
+        format.rdf    { Repository.singleton }
+        format.n3     { Repository.singleton }
+        format.jsonld { Repository.singleton }
       end
     end
   end
