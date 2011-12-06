@@ -5,8 +5,9 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://greggkellogg.net/foaf.rdf#me> a foaf:Person;
-   foaf:homepage rdfs:isDefinedBy <http://greggkellogg.net/foaf.rdf>;
+<http://greggkellogg.net/foaf#me> a foaf:Person;
+   foaf:homepage <http://greggkellogg.net/>;
+   rdfs:isDefinedBy <http://greggkellogg.net/foaf.rdf>;
    foaf:developer [ a doap:Project;
      dc:creator <http://greggkellogg.net/foaf.rdf#me>;
      doap:bug-database <https://github.com/gkellogg/github-lod/issues>;
