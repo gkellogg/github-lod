@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
-# Example 1
 
 # Simple Graph Manipulation
 require 'bundler'
+require 'rdf/turtle'
 Bundler.setup
 
 # Example 6

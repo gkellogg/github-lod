@@ -80,7 +80,7 @@ GEM
     rdf (0.3.4.1)
       addressable (>= 2.2.6)
     rdf-isomorphic (0.3.4)
-      rdf (>= 0.2.3)
+      rdf (>= 0.3.4)
     rdf-json (0.3.0)
       json_pure (>= 1.4.2)
       rdf (~> 0.3.0)
