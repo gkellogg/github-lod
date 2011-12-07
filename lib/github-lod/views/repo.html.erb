@@ -29,8 +29,8 @@
     <span property="doap:programming-language"><%= repo.project.language %></span><br/>
   <% end -%>
     Repository:
-    <a property="doap:repository" href="<%= repo.subject%>" typeof="doap:GitRepository">
-      <%= repo.subject %>
+    <a property="doap:repository" href="<%= repo.url%>" typeof="doap:GitRepository">
+      <%= repo.url %>
     </a><br/>
   <% if repo.project.has_issues? -%>
     Issues:
