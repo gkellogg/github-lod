@@ -6,7 +6,7 @@
   <span property="foaf.nick"><%== person.login %></span>
   <% end -%>
   with account
-  <a rel="foaf:account" typeof="foaf:OnlineAccount" href="/accounts/<%== person.login %>">
+  <a rel="foaf:account" typeof="foaf:OnlineAccount" href="<%= BASE_URI %>/accounts/<%== person.login %>">
     <span property="doap:accountName"><%== person.login %></span>
   </a>
 </li>

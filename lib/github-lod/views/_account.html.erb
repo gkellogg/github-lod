@@ -1,5 +1,5 @@
 <li about="<%= account.subject %>" typeof="foaf:OnlineAccount">
-  <a href="/accounts/<%== account.login %>">
+  <a href="<%= BASE_URI %>/accounts/<%== account.login %>">
     <div rev="foaf:account" typeof="foaf:Person" resource="<%== account.person.subject %>">
       <% if account.person.name -%>
       <span property="foaf.name"><%== account.person.name %></span>

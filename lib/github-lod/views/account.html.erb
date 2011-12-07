@@ -29,7 +29,7 @@
       <span property="foaf:based_near"><%== account.person.location %></span>.
     </p>
   
-    <section><h2><a href="/user/<%= account.login %>/projects">Projects</a></h2>
+    <section><h2><a href="<%= BASE_URI %>/accounts/<%= account.login %>/repos">Projects</a></h2>
       <ul>
         <%= partial "project", :collection => account.person.projects.sort_by {|r| r.name.downcase } %>
       </li>

@@ -10,6 +10,7 @@ module GitHubLOD
     register Sinatra::LinkedData
     helpers Sinatra::Partials
     set :views, ::File.expand_path('../views',  __FILE__)
+    BASE_URI = ENV['RackBaseURI']
 
     # Register some basic RDF mime types.
     # This could be done automatically by iterating
@@ -31,7 +32,7 @@ module GitHubLOD
     end
 
     get '/' do
-      redirect to('/accounts')
+      redirect to("#{BASE_URI}/accounts")
     end
 
     ##
