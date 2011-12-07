@@ -32,7 +32,7 @@ module GitHubLOD
     end
 
     get '/' do
-      redirect to("#{BASE_URI}/accounts")
+      redirect to("/accounts")
     end
 
     ##
