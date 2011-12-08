@@ -21,6 +21,7 @@ module GitHubLOD
     property  :wiki,              :predicate => RDF::DOAP.wiki
     property  :issues,            :predicate => RDF::DOAP['bug-database']
     reference :owner,             :predicate => RDF::DC.creator
+    property  :created_at,        :predicate => RDF::DC.created
     reference :repo,              :predicate => RDF::DOAP.repository, :summary => true
 
     ##
@@ -45,8 +46,9 @@ module GitHubLOD
     end
     
     ## Accessors #
+    def created_at; RDF::Literal::DateTime.new(api_obj.created_at); end
     def wiki; RDF::URI("#{api_obj.url}/wiki") if api_obj.has_wiki?; end
-    def home; RDF::URI(api_obj.home) unless api_obj.home.to_s.empty?; end
+    def homepage; RDF::URI(api_obj.homepage) unless api_obj.homepage.to_s.empty?; end
     def issues; RDF::URI("#{api_obj.url}/issues") if api_obj.has_issues?; end
     def repo; Repository.new(api_obj); end
 

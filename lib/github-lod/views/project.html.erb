@@ -1,9 +1,9 @@
 <section about="<%== project.subject%>" typeof="doap:Project">
   <h1 property="doap:name"><%== project.name %></h1>
-  <p property="description"><%== project.description %></p>
+  <p property="doap:description"><%== project.description %></p>
   <p>
-    Developer:
-    <span property="foaf:developer"
+    Creator:
+    <span property="dc:creator"
        resource="<%= project.owner.subject %>"
        typeof="foaf:Person">
        <% if project.owner.name -%>
@@ -11,9 +11,11 @@
        <% else -%>
          <span property="foaf:nick"><%== project.owner.login %></span>
        <% end -%>
-      (<a rel="foaf:account" href="<%= project.owner.subject %>" typeof="foaf:OnlineAccount">
-        <span property="foaf:nick"><%== project.owner.login %></span>
-      </a>)<br/>
+      (<span property="foaf:nick"><a href="<%= project.owner.account.subject %>"><%== project.owner.login %></a></span>)<br/>
+      <% if project.owner.email -%>
+      <link property="foaf:mbox_sha1sum" href="<%= project.owner.mbox_sha1sum %>"/>
+      <% end -%>
+    </span>
     Created:
     <time property="dc:created" datetime="<%=project.created_at%>">
       <%== RDF::Literal::DateTime.new(project.repo.created_at).humanize %>
@@ -29,8 +31,10 @@
     <span property="doap:programming-language"><%= project.language %></span><br/>
   <% end -%>
     Repository:
-    <a property="doap:repository" href="<%= project.repo.url%>" typeof="doap:GitRepository">
+    <a property="doap:repository" href="<%= project.repo.url %>" typeof="doap:GitRepository">
       <%= project.repo.url %>
+      <meta property="dc:title" content="<%== project.repo.name %>" />
+      <link property="doap:browse" href="project.repo.url" />
     </a><br/>
   <% if project.has_issues? -%>
     Issues:
