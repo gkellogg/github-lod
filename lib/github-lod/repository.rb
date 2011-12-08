@@ -15,9 +15,8 @@ module GitHubLOD
 
     property  RDF::DOAP.GitRepository,  :predicate => RDF.type, :summary => true
     property  :name,              :predicate => RDF::DC.title, :summary => true
-    property  :browse,            :predicate => RDF::DOAP.browse
-    reference :owner,             :predicate => RDF::DC.creator, :rev => true, :summary => true
-    reference :project,           :predicate => RDF::DOAP.resository, :rev => true, :summary => true
+    property  :browse,            :predicate => RDF::DOAP.browse, :summary => true
+    reference :project,           :predicate => RDF::DOAP.repository, :rev => true, :summary => true
 
     ##
     # Loaded projects, those having a #url

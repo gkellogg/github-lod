@@ -7,7 +7,7 @@ module GitHubLOD
   # Creates a DOAP record for the project, with reference to Owner and Repository.
   #
   # Note that a GitHub repo does _not_ denote project. A project is best modeled as a
-  # doap:Project using a Blank Node, for now.
+  # doap:Project using a Blank Node, or a fragid off of the home page.
   #
   # @see http://developer.github.com/v3/users/
   class Project < Base
@@ -45,9 +45,22 @@ module GitHubLOD
     end
     
     ## Accessors #
-    def wiki; "#{url}/wiki" if has_wiki?; end
-    def issues; "#{url}/issues" if has_issues?; end
+    def wiki; RDF::URI("#{api_obj.url}/wiki") if api_obj.has_wiki?; end
+    def home; RDF::URI(api_obj.home) unless api_obj.home.to_s.empty?; end
+    def issues; RDF::URI("#{api_obj.url}/issues") if api_obj.has_issues?; end
     def repo; Repository.new(api_obj); end
+
+    ##
+    # Override each to descend into repo. Can't do that through normal summary
+    # information, as it leads to recursion loops
+    #
+    # @param [Boolean] summary Only summary information
+    # @yield statement
+    # @yieldparam [RDF::Statement] statement
+    def each(summary = nil, &block)
+      super
+      repo.each(&block) unless summary
+    end
 
     def inspect
       "#<#{self.class.name}:#{self.object_id}" + 

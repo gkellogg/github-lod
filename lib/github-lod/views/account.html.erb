@@ -1,48 +1,54 @@
-<section>
+<section about="<%== account.subject %>" typeof="foaf:OnlineAccount">
   <h1><%= title %></h1>
-  <p about="<%== account.subject %>" typeof="foaf:OnlineAccount">
-    Account created
+  <p>
+    <a property="doap:accountServiceHomepage" href="http://github.com/">
+      <span property="foaf:name">GitHub</span>
+    </a> Account created
     <time property="dc:created" datetime="<%=account.created_at%>">
       <%== RDF::Literal::DateTime.new(account.created_at).humanize %>
     </time> with account name
-    <a property="foaf:account" href="<%== account.subject %>">
+    <a property="foaf:page doap:homepage" href="<%== account.subject %>">
       <span property="foaf:accountName"><%= account.login %></span>
     </a>.
   </p>
 
-  <div class="person" about=<%= account.person.subject%> typeof="foaf:Person">
+  <div class="person" rev="doap:account" resource=<%= account.person.subject%> typeof="foaf:Person">
     <p>
       <% if account.person.name -%>
       <span property="foaf:name"><%== account.person.name %></span>
+      (<span property="foaf:nick"><%== account.login %></span>)
       <% else -%>
-      <span property="foaf:nick"><%== account.login %></span>
       <% end -%>
       <% if account.person.email -%>
         <img property="foaf:depiction" src="<%= account.person.depiction%>"/>
+        <link property="foaf:mbox" href="<%= account.person.email %>">
+        <link property="foaf:mbox_sha1sum" href="<%= account.person.mbox_sha1sum %>">
       <% end -%>
       has <%= account.person.projects.length %> projects,
       follows <%= account.person.followings.length %> users,
       and is followed by <%= account.person.followers.length %> users.
     </p>
     <p>
-      <%== account.person.name || account.person.login %> lives in
-      <span property="foaf:based_near"><%== account.person.location %></span>.
+      <% unless account.person.to_s.empty? -%>
+      Location:
+      <span property="foaf:based_near"><%== account.person.location %></span><br/>.
+      <% end -%>
     </p>
   
-    <section><h2><a href="<%= BASE_URI %>/accounts/<%= account.login %>/repos">Projects</a></h2>
-      <ul>
+    <section><h2><a href="<%= BASE_URI %>/accounts/<%= account.login %>/projects">Projects</a></h2>
+      <ul rel="foaf:developer" rev="dc:creator">
         <%= partial "project", :collection => account.person.projects.sort_by {|r| r.name.downcase } %>
       </li>
     </section>
 
     <section><h2>Followers</h2>
-      <ul>
+      <ul rev="foaf:knows">
         <%= partial "person", :collection => account.person.followers.sort_by {|u| u.name || u.login} %>
       </li>
     </section>
 
     <section><h2>Following</h2>
-      <ul>
+      <ul rel="foaf:knows">
         <%= partial "person", :collection => account.person.followings.sort_by {|u| u.name || u.login} %>
       </li>
     </section>

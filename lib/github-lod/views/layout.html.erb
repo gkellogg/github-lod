@@ -17,7 +17,7 @@
 
     <%= partial "#{head}_head".to_sym rescue nil %>
   </head>
-  <body>
+  <body prefix="doap: http://usefulinc.com/ns/doap#">
     <%= partial :header %>
     <%= yield %>
     <%= partial :footer %>

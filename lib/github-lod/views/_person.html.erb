@@ -1,12 +1,8 @@
 <li about="<%= person.subject %>" typeof="foaf:Person">
   <% if person.name -%>
-  <span property="foaf.name"><%== person.name %></span>
-  (<span property="foaf.nick"><%== person.login %></span>)
+  <span property="foaf:name"><%== person.name %></span>
+  (<span property="foaf:nick"><%== person.login %></span>)
   <% else -%>
-  <span property="foaf.nick"><%== person.login %></span>
+  <span property="foaf:nick"><%== person.login %></span>
   <% end -%>
-  with account
-  <a rel="foaf:account" typeof="foaf:OnlineAccount" href="<%= BASE_URI %>/accounts/<%== person.login %>">
-    <span property="doap:accountName"><%== person.login %></span>
-  </a>
 </li>

@@ -19,7 +19,7 @@ module GitHubLOD
     property  :location,        :predicate => RDF::FOAF.based_near
     property  :blog,            :predicate => RDF::FOAF.weblog
     property  :mbox,            :predicate => RDF::FOAF.mbox
-    property  :mbox_sha1sum,    :predicate => RDF::FOAF.mbox_sha1sum
+    property  :mbox_sha1sum,    :predicate => RDF::FOAF.mbox_sha1sum, :summary => true
     property  :depiction,       :predicate => RDF::FOAF.depiction
     reference :account,         :predicate => RDF::FOAF.account,  :summary => true
     reference :followings,      :predicate => RDF::FOAF.knows
@@ -67,6 +67,18 @@ module GitHubLOD
       api_obj.fetch(:self, :followers, :followings, :repos)
       @followers = @followings = @projects = nil
       self
+    end
+
+    ##
+    # Override each to descend into project. Can't do that through normal summary
+    # information, as it leads to recursion loops
+    #
+    # @param [Boolean] summary Only summary information
+    # @yield statement
+    # @yieldparam [RDF::Statement] statement
+    def each(summary = nil, &block)
+      super
+      projects.each {|p| p.each(&block)} unless summary
     end
 
     ##

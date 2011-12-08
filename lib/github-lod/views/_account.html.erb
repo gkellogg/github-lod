@@ -2,10 +2,10 @@
   <a href="<%= BASE_URI %>/accounts/<%== account.login %>">
     <div rev="foaf:account" typeof="foaf:Person" resource="<%== account.person.subject %>">
       <% if account.person.name -%>
-      <span property="foaf.name"><%== account.person.name %></span>
-      (<span property="foaf.nick"><%== account.person.login %></span>)
+      <span property="foaf:name"><%== account.person.name %></span>
+      (<span property="foaf:nick"><%== account.person.login %></span>)
       <% else -%>
-      <span property="foaf.nick"><%== account.person.login %></span>
+      <span property="foaf:nick"><%== account.person.login %></span>
       <% end -%>
     </div>
   </a>

@@ -48,10 +48,10 @@ module GitHubLOD
         end
 
         # Return all loaded users for content negotiation
-        format.nt { Account.singleton }
-        format.ttl { Account.singleton }
-        format.rdf { Account.singleton }
-        format.n3 { Account.singleton }
+        format.nt  { RDF::Graph.new << Account.singleton }
+        format.ttl { RDF::Graph.new << Account.singleton }
+        format.rdf { RDF::Graph.new << Account.singleton }
+        format.n3  { RDF::Graph.new << Account.singleton }
       end
     end
 
@@ -68,54 +68,54 @@ module GitHubLOD
         end
         
         # Content negotiation
-        format.nt     { account }
-        format.ttl    { account }
-        format.rdf    { account }
-        format.n3     { account }
-        format.jsonld { account }
+        format.nt     { RDF::Graph.new << account }
+        format.ttl    { RDF::Graph.new << account }
+        format.rdf    { RDF::Graph.new << account }
+        format.n3     { RDF::Graph.new << account }
+        format.jsonld { RDF::Graph.new << account }
       end
     end
 
     ##
-    # Show a users repositories
-    get '/accounts/:login/repos/:repo' do
+    # Show a users projects
+    get '/accounts/:login/projects/:project' do
       account = Account.new(params[:login])
-      r = account.repos.detect {|r| r.name == params[:repo]}
-      r = r.sync
+      r = account.repos.detect {|r| r.name == params[:project]}
+      p = r.project.sync
       respond_to do |format|
         format.html do
-          erb :repo, :locals => {
-            :title => "GitHub repository #{account.login}/#{r.name}",
-            :repo => r,
+          erb :project, :locals => {
+            :title => "GitHub repository #{account.login}/#{p.name}",
+            :project => p,
           }
         end
 
         # Content negotiation
-        format.nt     { r }
-        format.ttl    { r }
-        format.rdf    { r }
-        format.n3     { r }
-        format.jsonld { r }
+        format.nt     { RDF::Graph.new << p }
+        format.ttl    { RDF::Graph.new << p }
+        format.rdf    { RDF::Graph.new << p }
+        format.n3     { RDF::Graph.new << p }
+        format.jsonld { RDF::Graph.new << p }
       end
     end
 
     ##
-    # Show cached repos
-    get '/repos' do
+    # Show cached projects
+    get '/projects' do
       respond_to do |format|
         format.html do
-          erb :repos, :locals => {
-            :title => "Loaded GitHub repositories",
-            :repos => Repository.all.sort_by {|r| "#{r.owner.login}/#{r.name}".downcase}
+          erb :projects, :locals => {
+            :title => "Loaded GitHub projects",
+            :projects => Project.all.sort_by {|o| "#{p.owner.login}/#{p.name}".downcase}
           }
         end
 
         # Content negotiation
-        format.nt     { Repository.singleton }
-        format.ttl    { Repository.singleton }
-        format.rdf    { Repository.singleton }
-        format.n3     { Repository.singleton }
-        format.jsonld { Repository.singleton }
+        format.nt     { RDF::Graph.new << Project.singleton }
+        format.ttl    { RDF::Graph.new << Project.singleton }
+        format.rdf    { RDF::Graph.new << Project.singleton }
+        format.n3     { RDF::Graph.new << Project.singleton }
+        format.jsonld { RDF::Graph.new << Project.singleton }
       end
     end
   end

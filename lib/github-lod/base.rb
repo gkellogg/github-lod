@@ -28,7 +28,6 @@ module GitHubLOD
     # @param [Hash{Symbol => Object}] options
     # @option options [RDF::URI] :predicate
     # @option options [Boolean] :rev Reverse the sense of this property
-    # @option optinos [Boolean] :summary include in summary information
     def self.reference(accessor, options)
       @reference ||= {}
       @reference[accessor] = options
@@ -152,8 +151,13 @@ module GitHubLOD
     
     ##
     # Create a named node using a safe ID
+    #
+    # Be careful to not create duplicate nodes with the same id,
+    # as they look like different nodes in the graph
     def bnode(id)
-      RDF::Node(id.gsub(/[^A-Za-z0-9\-_]/, '_'))
+      id.gsub!(/[^A-Za-z0-9\-_]/, '_')
+      @@nodes ||= {}
+      @@nodes[id] ||= RDF::Node(id)
     end
     
     ##

@@ -64,6 +64,18 @@ module GitHubLOD
       self
     end
 
+    ##
+    # Override each to descend into person. Can't do that through normal summary
+    # information, as it leads to recursion loops
+    #
+    # @param [Boolean] summary Only summary information
+    # @yield statement
+    # @yieldparam [RDF::Statement] statement
+    def each(summary = nil, &block)
+      super
+      person.each(&block) unless summary
+    end
+
     def repos
       @repos ||= fetch_assoc(:repos, Repository)
     end
