@@ -106,7 +106,7 @@ module GitHubLOD
         format.html do
           erb :projects, :locals => {
             :title => "Loaded GitHub projects",
-            :projects => Project.all.sort_by {|o| "#{p.owner.login}/#{p.name}".downcase}
+            :projects => Project.all.sort_by {|p| "#{p.owner.login}/#{p.name}".downcase}
           }
         end
 
